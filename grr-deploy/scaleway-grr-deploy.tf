@@ -19,8 +19,8 @@ data "scaleway_image" "ubuntu" {
 #### NOTE: ANYTHING SMALLER THAN VC1M WON'T HAVE ENOUGH RAM
 
 
-resource "scaleway_server" "elk_test" {
-  name  = "elk_test"
+resource "scaleway_server" "grr_test" {
+  name  = "grr_test"
   image = "${data.scaleway_image.ubuntu.id}"
   type  = "VC1M"
   dynamic_ip_required = 1
@@ -88,7 +88,7 @@ resource "scaleway_server" "elk_test" {
 	connection {
 		type     = "ssh"
 		user     = "root"
-		private_key = "${file("~/.ssh/scaleway-dev-arm")}"
+		private_key = "${file("~/.ssh/YOURKEYHERE")}"
  }
     
   }
