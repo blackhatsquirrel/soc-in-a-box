@@ -1,5 +1,3 @@
-#### TODO - ADD NGINX CONFIG
-
 #### PROVIDER INFO
 
 provider "scaleway" {
@@ -48,7 +46,9 @@ resource "scaleway_server" "elk_test" {
 		"sudo apt-get -y install kibana",
 		"sudo systemctl daemon-reload",
 		"sudo systemctl enable kibana",
-		"sudo systemctl start kibana"
+		"sudo systemctl start kibana",
+		"sudo apt-get install nginx",
+		"sudo mkdir /etc/nginx/ssl"
     ]
 }   
 
@@ -62,6 +62,23 @@ resource "scaleway_server" "elk_test" {
   	provisioner "file" {
     source      = "./kibana.yml"
     destination = "/etc/kibana/kibana.yml"
+  }
+  
+    provisioner "file" {
+    source      = "./default"
+    destination = "/etc/nginx/sites-available/default"
+  }
+  
+#### COPY OPENSSL FILES (create with: "sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt",)
+
+    provisioner "file" {
+    source      = "./nginx.key"
+    destination = "/etc/nginx/ssl/nginx.key"
+  }
+  
+    provisioner "file" {
+    source      = "./nginx.crt"
+    destination = "/etc/nginx/ssl/nginx.crt"
   }
   
 #### INSTALL AND CONFIGURE UFW & FAIL2BAN
@@ -78,7 +95,8 @@ resource "scaleway_server" "elk_test" {
 		"sudo apt-get -y install fail2ban",
 		"sudo service fail2ban start",
 		"sudo service elasticsearch restart",
-		"sudo service kibana restart"
+		"sudo service kibana restart",
+		"sudo service nginx restart"
     ]
 }   
 
